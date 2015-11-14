@@ -113,8 +113,8 @@ class GamepediaSpider(scrapy.Spider):
             if num_spans == 1:
                 unique_item['implicit_mods'] = []
             else:
-                unique_item['implicit_mods'] = an_item.xpath("./td[last()]//span[@class='itemboxstatsgroup text-mod'][1]/text()").extract()
-            affix_mods = an_item.xpath("./td[last()]//span[@class='itemboxstatsgroup text-mod'][last()]/text()").extract()                
+                unique_item['implicit_mods'] = [i.strip() for i in an_item.xpath("./td[last()]//span[@class='itemboxstatsgroup text-mod'][1]/text()").extract()]
+            affix_mods = [i.strip() for i in an_item.xpath("./td[last()]//span[@class='itemboxstatsgroup text-mod'][last()]/text()").extract()]
             unique_item['affix_mods'] = affix_mods
             unique_item['url'] = "{}://{}{}".format(url_parts.scheme, 
                                                     url_parts.netloc, an_item.xpath("./td[1]/a[1]/@href").extract()[0])
