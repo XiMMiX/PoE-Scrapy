@@ -189,7 +189,7 @@ class ValueTransform(DataTransform):
         }, 
         { # single_value, e.g. +N to ....
             'name': 'Prepend single value',
-            'match': ur"\+?([\u2013\u2212-]?\d+)%?\b", 
+            'match': ur"\+?([\u2013\u2212-]?[0-9.]+)%?\b", 
             'replace': r"\1:",
             'type': ["value", "single"]
         }
