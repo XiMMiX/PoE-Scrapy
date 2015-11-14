@@ -272,6 +272,7 @@ class UniqueItemsProcessor(object):
             SanitizeTransform(self)
         ]
         self.append_item_url = False
+        self.category_order = []
     
     def __str__(self):
         return ("<{} at {}> - {} items: {}/{}/{} (U/S/C)"
@@ -411,6 +412,12 @@ class UniqueItemsProcessor(object):
                 timestamp = time.strftime("%Y-%m-%dT%H:%M:%S")
             f.write(u"{}{}".format(UniqueItemsProcessor.file_header.format(timestamp, os.linesep), self.text_store).encode(encoding))
     
+    def _sort_categories(self):
+        '''Sort categories so categories can be written to the uniques file in a predictable manner. 
+           This should aid in viewing diff's between different versions of that file.'''
+        
+        self.categories.sort(key=lambda cat: self.category_order.index(cat) if cat in self.category_order else 0) 
+    
     def process_special_items(self):
         log.msg("Parsing special items...", log.INFO)
         sep = self.field_separator
@@ -461,6 +468,8 @@ class UniqueItemsProcessor(object):
             self.text_store = transform.transform(self.text_store, step="post_process")
         
     def process_all(self):
+        # sort categories before processing
+        self._sort_categories()
         for category in self.categories:
             unique_item_set = self._get_unique_item_set(category)
             text = self.text_store
@@ -508,6 +517,7 @@ class PoeScrapyPipeline(object):
         pipeline.verbose = crawler.settings.get('VERBOSE', 0)
         pipeline.processor = UniqueItemsProcessor()
         pipeline.processor.append_item_url = crawler.settings.get('APPEND_ITEM_URL', False)
+        pipeline.processor.category_order = crawler.settings.get('CATEGORY_ORDER', [])
         return pipeline
           
     def spider_closed(self, spider):

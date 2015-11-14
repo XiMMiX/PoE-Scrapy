@@ -27,3 +27,26 @@ APPEND_ITEM_URL = True
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'scrapy_engine (+http://www.yourdomain.com)'
+
+CATEGORY_ORDER = [
+    u'Quivers',
+    u'Belts',
+    u'Amulets',
+    u'Armours',
+    u'Boots',
+    u'Gloves',
+    u'Helmets',
+    u'Rings',
+    u'Bows',
+    u'Shields',
+    u'Axes',
+    u'Rods',
+    u'Maces',
+    u'Daggers',
+    u'Staves',
+    u'Wands',
+    u'Swords',
+    u'Flasks',
+    u'Maps',
+    u'Claws',
+]
