@@ -58,7 +58,8 @@ class GamepediaSpider(scrapy.Spider):
         'http://pathofexile.gamepedia.com/List_of_unique_mana_flasks',
         'http://pathofexile.gamepedia.com/List_of_unique_hybrid_flasks',
         'http://pathofexile.gamepedia.com/List_of_unique_utility_flasks',
-        'http://pathofexile.gamepedia.com/List_of_unique_maps'
+        'http://pathofexile.gamepedia.com/List_of_unique_maps',
+        'http://pathofexile.gamepedia.com/List_of_unique_jewels',
     ]
 
     def set_path(self, url_parts):

@@ -49,4 +49,5 @@ CATEGORY_ORDER = [
     u'Flasks',
     u'Maps',
     u'Claws',
+    u'Jewels',
 ]
