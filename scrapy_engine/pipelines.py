@@ -219,33 +219,33 @@ class ValueTransform(DataTransform):
                 else:
                     rule_type = "-".join(rule_type)
                     match_groups = number_match.groups()
-                    value = "{0}".format(match_groups[0])
+                    value = u"{0}".format(match_groups[0])
                     if len(match_groups) == 4:
                         if rule_type == "range-double-negative": 
-                            value = "-({0}-{1},{2}-{3})".format(match_groups[0], match_groups[1], 
+                            value = u"-({0}-{1},{2}-{3})".format(match_groups[0], match_groups[1], 
                                                                 match_groups[2], match_groups[3])
                         else: # range-double-positive
-                            value = "{0}-{1},{2}-{3}".format(match_groups[0], match_groups[1], 
+                            value = u"{0}-{1},{2}-{3}".format(match_groups[0], match_groups[1], 
                                                              match_groups[2], match_groups[3])
                     elif len(match_groups) == 2:
                         if rule_type == "range-single-negative":
-                            value = "-({0}-{1})".format(match_groups[0], 
+                            value = u"-({0}-{1})".format(match_groups[0], 
                                                         match_groups[1])
                         else: # range-single-positive
-                            value = "{0}-{1}".format(match_groups[0], 
+                            value = u"{0}-{1}".format(match_groups[0], 
                                                      match_groups[1])
                     else:
                         log.msg("can't apply rule {0!r} - match groups missing".format(rule), log.DEBUG)
                     # remove matched value from text before we extract just the words
                     text = re.sub(rule['match'], "", text) 
                     words = _get_words(text)
-                    text = "{0}:{1}".format(value, " ".join(words))
+                    text = u"{0}:{1}".format(value, " ".join(words))
         return text
         
 
 class UniqueItemsProcessor(object):
     
-    file_header = """\
+    file_header = u"""\
 ; Data from http://pathofexile.gamepedia.com/List_of_unique_items
 ; The "@" symbol marks a mod as implicit. This means a seperator\
  line will be appended after this mod. If there are multiple implicit mods,\
@@ -341,7 +341,7 @@ class UniqueItemsProcessor(object):
         url = item["url"]
         implicit_mods = item["implicit_mods"]
         affix_mods = item["affix_mods"]
-        log.msg("Adding {0} to {1}".format(name, category), log.DEBUG)
+        log.msg(u"Adding {0} to {1}".format(name, category), log.DEBUG)
         unique_item_set.append({
             "name": name, 
             "url": url, 
@@ -357,7 +357,8 @@ class UniqueItemsProcessor(object):
         # Internal: RegExr x-forms:
         #  *\+?(-)?\((-?[0-9\.]+) to (-?[0-9\.]+)\)%? *([\w ]+) -> $1$2-$3:$4
         for transform in self.transforms:
-            data = data.strip().decode(self.spider.get_site_encoding()) 
+            # Scrapy's xpath extract already produces unicode we don't want to decode that.
+            #data = data.strip().decode(self.spider.get_site_encoding()) 
             data = transform.transform(data, category)
         return data
     
@@ -408,8 +409,7 @@ class UniqueItemsProcessor(object):
             else:
                 log.msg("Writing data to {0}.".format(outfile), level=log.INFO)
                 timestamp = time.strftime("%Y-%m-%dT%H:%M:%S")
-            f.write("{}{}".format(UniqueItemsProcessor.file_header.format(timestamp, os.linesep), self.text_store)
-                          .decode(self.spider.get_site_encoding()).encode(encoding))
+            f.write(u"{}{}".format(UniqueItemsProcessor.file_header.format(timestamp, os.linesep), self.text_store).encode(encoding))
     
     def process_special_items(self):
         log.msg("Parsing special items...", log.INFO)
@@ -466,7 +466,7 @@ class UniqueItemsProcessor(object):
             text = self.text_store
             text = text + (self.category_header.format(category, self._item_count(category)))
             if self.append_item_url:
-                line_format = "{{}}{{}}{{}} ; {{}} {0}".format(os.linesep)
+                line_format = u"{{}}{{}}{{}} ; {{}} {0}".format(os.linesep)
                 for item in unique_item_set:
                     line = line_format.format(self._process_name(item),
                                               self._process_implicit_mods(item), 
@@ -474,7 +474,7 @@ class UniqueItemsProcessor(object):
                                               item["url"])
                     text = text + line
             else:
-                line_format = "{{}}{{}}{{}}{0}".format(os.linesep)
+                line_format = u"{{}}{{}}{{}}{0}".format(os.linesep)
                 for item in unique_item_set:
                     line = line_format.format(self._process_name(item),
                                               self._process_implicit_mods(item), 
